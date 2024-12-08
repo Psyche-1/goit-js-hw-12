@@ -6,12 +6,19 @@
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Vanilla App Template</title>
-  <link rel="stylesheet" href="./css/styles.css" />
+  <link rel="stylesheet" href="./css/style.css" />
 </head>
 
 <body>
-
-
+  <form action="submit" class="form">
+    <input type="text" id="search-field" />
+    <button type="submit">Search</button>
+  </form>
+  <ul class="gallery"></ul>
+  <p class="loading visually-hidden"><span class="loader"></span> 'Loading images, please wait...'</p>
+  <div class="btn-container">
+    <button type="button" class="load-more visually-hidden">Load more</button>
+  </div>
   <script type="module" src="./main.js"></script>
 </body>
 
