@@ -15,7 +15,7 @@ const loadMore = document.querySelector('.load-more');
 let searchWord = '';
 let images = [];
 let currentPage = 1;
-let per_page = 100;
+let per_page = 15;
 let lastPage;
 
 export default async function searching(event) {
@@ -55,16 +55,6 @@ export default async function searching(event) {
     .then(post => {
       lastPage = Math.ceil(post.totalHits / per_page);
 
-      if (currentPage >= lastPage) {
-        iziToast.show({
-          message: "We're sorry, but you've reached the end of search results.",
-          backgroundColor: '#0099FF',
-        });
-        loading.classList.add('visually-hidden');
-        loadMore.classList.add('visually-hidden');
-        currentPage = 1;
-      }
-
       images = post.hits;
       if (!images.length) {
         iziToast.show({
@@ -76,6 +66,16 @@ export default async function searching(event) {
         loading.classList.add('visually-hidden');
         loadMore.classList.add('visually-hidden');
         return;
+      }
+
+      if (currentPage >= lastPage) {
+        iziToast.show({
+          message: "We're sorry, but you've reached the end of search results.",
+          backgroundColor: '#0099FF',
+        });
+        loading.classList.add('visually-hidden');
+        loadMore.classList.add('visually-hidden');
+        currentPage = 1;
       }
 
       createMarkup(images);
@@ -138,16 +138,6 @@ export async function searchingMore() {
     .then(post => {
       lastPage = Math.ceil(post.totalHits / per_page);
 
-      if (currentPage >= lastPage) {
-        iziToast.show({
-          message: "We're sorry, but you've reached the end of search results.",
-          backgroundColor: '#0099FF',
-        });
-        loading.classList.add('visually-hidden');
-        loadMore.classList.add('visually-hidden');
-        currentPage = 1;
-      }
-
       images = post.hits;
       if (!images.length) {
         iziToast.show({
@@ -158,6 +148,16 @@ export async function searchingMore() {
         loading.classList.add('visually-hidden');
         loadMore.classList.add('visually-hidden');
         return;
+      }
+
+      if (currentPage >= lastPage) {
+        iziToast.show({
+          message: "We're sorry, but you've reached the end of search results.",
+          backgroundColor: '#0099FF',
+        });
+        loading.classList.add('visually-hidden');
+        loadMore.classList.add('visually-hidden');
+        currentPage = 1;
       }
 
       createMarkup(images);
