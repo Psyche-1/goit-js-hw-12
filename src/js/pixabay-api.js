@@ -54,7 +54,6 @@ export default async function searching(event) {
     })
     .then(post => {
       lastPage = Math.ceil(post.totalHits / per_page);
-      console.log(currentPage, lastPage);
 
       if (currentPage >= lastPage) {
         iziToast.show({
@@ -111,7 +110,6 @@ const fetchPhotos = async url => {
 
 export async function searchingMore() {
   currentPage++;
-  console.log(currentPage, lastPage);
 
   loading.classList.remove('visually-hidden');
   if (currentPage < lastPage) {
