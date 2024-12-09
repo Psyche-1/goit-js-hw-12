@@ -3,8 +3,9 @@ import iziToast from 'izitoast';
 // Додатковий імпорт стилів
 import 'izitoast/dist/css/iziToast.min.css';
 
-import createMarkup from './render-functions';
 import axios from 'axios';
+
+import createMarkup from './render-functions';
 
 const input = document.querySelector('#search-field');
 const loading = document.querySelector('.loading');
@@ -14,7 +15,7 @@ const loadMore = document.querySelector('.load-more');
 let searchWord = '';
 let images = [];
 let currentPage = 1;
-let per_page = 15;
+let per_page = 100;
 let lastPage;
 
 export default async function searching(event) {
@@ -52,6 +53,19 @@ export default async function searching(event) {
       return response;
     })
     .then(post => {
+      lastPage = Math.ceil(post.totalHits / per_page);
+      console.log(currentPage, lastPage);
+
+      if (currentPage >= lastPage) {
+        iziToast.show({
+          message: "We're sorry, but you've reached the end of search results.",
+          backgroundColor: '#0099FF',
+        });
+        loading.classList.add('visually-hidden');
+        loadMore.classList.add('visually-hidden');
+        currentPage = 1;
+      }
+
       images = post.hits;
       if (!images.length) {
         iziToast.show({
@@ -60,13 +74,17 @@ export default async function searching(event) {
           backgroundColor: '#FFA000',
         });
         gallery.innerHTML = '';
+        loading.classList.add('visually-hidden');
+        loadMore.classList.add('visually-hidden');
         return;
       }
 
       createMarkup(images);
-      // gallery.innerHTML = '';
       loading.classList.add('visually-hidden');
-      loadMore.classList.remove('visually-hidden');
+
+      if (currentPage < lastPage) {
+        loadMore.classList.remove('visually-hidden');
+      }
     })
     .catch(error => {
       iziToast.show({
@@ -74,6 +92,8 @@ export default async function searching(event) {
         backgroundColor: 'red',
       });
       gallery.innerHTML = '';
+      loading.classList.add('visually-hidden');
+      loadMore.classList.add('visually-hidden');
     });
 }
 
@@ -90,10 +110,13 @@ const fetchPhotos = async url => {
 };
 
 export async function searchingMore() {
-  loading.classList.remove('visually-hidden');
-  loadMore.classList.remove('visually-hidden');
-
   currentPage++;
+  console.log(currentPage, lastPage);
+
+  loading.classList.remove('visually-hidden');
+  if (currentPage < lastPage) {
+    loadMore.classList.remove('visually-hidden');
+  }
 
   const params = new URLSearchParams({
     key: '47410848-ca90cbe53fb16c342854d4794',
@@ -115,17 +138,16 @@ export async function searchingMore() {
       return response;
     })
     .then(post => {
-      const lastPage = Math.floor(post.totalHits / per_page);
+      lastPage = Math.ceil(post.totalHits / per_page);
 
-      if (currentPage === lastPage - 1) {
+      if (currentPage >= lastPage) {
         iziToast.show({
           message: "We're sorry, but you've reached the end of search results.",
           backgroundColor: '#0099FF',
         });
-        loadMore.classList.add('visually-hidden');
         loading.classList.add('visually-hidden');
+        loadMore.classList.add('visually-hidden');
         currentPage = 1;
-        return;
       }
 
       images = post.hits;
@@ -136,6 +158,7 @@ export async function searchingMore() {
           backgroundColor: '#FFA000',
         });
         loading.classList.add('visually-hidden');
+        loadMore.classList.add('visually-hidden');
         return;
       }
 
