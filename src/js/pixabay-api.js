@@ -18,6 +18,25 @@ let currentPage = 1;
 let per_page = 15;
 let lastPage;
 
+const fetchPhotos = async url => {
+  try {
+    const response = await axios(url);
+    if (!response) {
+      iziToast.show({
+        message: error.message + ' error 1',
+        backgroundColor: 'red',
+      });
+    }
+    return response.data;
+  } catch (error) {
+    // iziToast.show({
+    //   message: error.message + ' error',
+    //   backgroundColor: 'red',
+    // });
+    return error;
+  }
+};
+
 export default async function searching(event) {
   event.preventDefault();
   currentPage = 1;
@@ -47,6 +66,11 @@ export default async function searching(event) {
 
   fetchPhotos(url)
     .then(response => {
+      if (response.message) {
+        if (response.message.toLowerCase().includes('error')) {
+          throw new Error(response.message);
+        }
+      }
       if (response.statusText) {
         throw new Error(response.status);
       }
@@ -87,7 +111,7 @@ export default async function searching(event) {
     })
     .catch(error => {
       iziToast.show({
-        message: error.message + ' error',
+        message: error.message + ' error 2',
         backgroundColor: 'red',
       });
       gallery.innerHTML = '';
@@ -95,18 +119,6 @@ export default async function searching(event) {
       loadMore.classList.add('visually-hidden');
     });
 }
-
-const fetchPhotos = async url => {
-  try {
-    const response = await axios(url);
-    return response.data;
-  } catch (error) {
-    iziToast.show({
-      message: error.message + ' error',
-      backgroundColor: 'red',
-    });
-  }
-};
 
 export async function searchingMore() {
   currentPage++;
@@ -130,6 +142,11 @@ export async function searchingMore() {
 
   fetchPhotos(url)
     .then(response => {
+      if (response.message) {
+        if (response.message.toLowerCase().includes('error')) {
+          throw new Error(response.message);
+        }
+      }
       if (response.statusText) {
         throw new Error(response.status);
       }
@@ -173,9 +190,10 @@ export async function searchingMore() {
     })
     .catch(error => {
       iziToast.show({
-        message: error.message + ' error',
+        message: error.message + ' error 3',
         backgroundColor: 'red',
       });
+      loading.classList.add('visually-hidden');
       gallery.innerHTML = '';
     });
 }
